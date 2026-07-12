@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Idempotent Orders API
 
 A hands-on backend project demonstrating how to implement **Idempotency Keys** in a REST API using Node.js, TypeScript, Express, Prisma, and Redis — solving the classic "duplicate request" problem that occurs with network retries.
