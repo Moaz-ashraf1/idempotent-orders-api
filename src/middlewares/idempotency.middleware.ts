@@ -12,7 +12,7 @@ export async function idempotencyMiddleware(req: RequestWithIdempotency, res: Re
     return next();
   }
 
-  const acquired = await idempotencyService.acquireLock(key);
+  const acquired = await idempotencyService.acquireLock(key,req.body);
 
   if (acquired) {
     req.idempotencyKey = key;
@@ -24,6 +24,15 @@ export async function idempotencyMiddleware(req: RequestWithIdempotency, res: Re
   if (!existingRecord) {
     req.idempotencyKey = key;
     return next();
+  }
+
+  const isSameRequest = idempotencyService.isSameRequest(existingRecord, req.body);
+  
+   if (!isSameRequest) {
+    return res.status(422).json({
+      error: 'Idempotency-Key reuse detected with a different request payload',
+      details: 'This key was previously used for a different request body. Use a new key for a new request.',
+    });
   }
 
   if (existingRecord.status === 'PROCESSING') {

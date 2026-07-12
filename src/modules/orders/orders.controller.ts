@@ -15,7 +15,7 @@ export const ordersController = {
       const order = await ordersService.createOrder({ product, quantity });
 
       if (req.idempotencyKey) {
-        await idempotencyService.completeWithResult(req.idempotencyKey, 201, order);
+        await idempotencyService.completeWithResult(req.idempotencyKey, req.body, 201, order);
       }
 
       return res.status(201).json(order);
